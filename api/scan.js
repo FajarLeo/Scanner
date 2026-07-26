@@ -6,13 +6,18 @@ export default async function handler(req, res) {
   }
 
   try {
-    const apiKey = process.env.PAGESPEED_API_KEYS; \
+    const apiKey = process.env.PAGESPEED_API_KEYS;
     const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=desktop&key=${apiKey}`;
-    
+
     const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      throw new Error(`Google API error: ${response.status}`);
+    }
+
     const data = await response.json();
     res.status(200).json(data);
   } catch (err) {
-    res.status(500).json({ error: "Gagal memanggil API" });
+    res.status(500).json({ error: `Gagal memanggil API: ${err.message}` });
   }
 }
