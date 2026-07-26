@@ -2,10 +2,9 @@ export default async function handler(req, res) {
   const allowedOrigins = ["https://fajarleo.github.io"];
   const origin = req.headers.origin;
 
-  // Pastikan header selalu dikirim, bahkan saat error
   const corsOrigin = allowedOrigins.includes(origin)
     ? origin
-    : "https://fajarleo.github.io";
+    : allowedOrigins[0];
 
   res.setHeader("Access-Control-Allow-Origin", corsOrigin);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -21,17 +20,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "URL diperlukan" });
     }
 
-    const apiKey = process.env.PAGESPEED_API_KEYS;
+    const apiKey = process.env.PAGESPEED_API_KEYS; // sesuai env kamu
     if (!apiKey) {
       return res.status(500).json({ error: "API key tidak ditemukan" });
     }
 
-    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=desktop&key=${apiKey}`;
+    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(
+      url
+    )}&strategy=desktop&key=${apiKey}`;
+
     const response = await fetch(apiUrl);
     const data = await response.json();
 
-    res.status(200).json(data);
+    return res.status(200).json(data);
   } catch (err) {
-    res.status(500).json({ error: "Internal Server Error", detail: err.message });
+    return res.status(500).json({
+      error: "Internal Server Error",
+      detail: err.message,
+    });
   }
 }
