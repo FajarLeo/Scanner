@@ -28,18 +28,21 @@ export default async function handler(req, res) {
       url
     )}&strategy=desktop&key=${apiKey}`;
 
-    const response = await fetch(apiUrl, { redirect: "follow" });
-    const data = await response.json();
-    return res.status(200).json(data);
-
-
-    // Tetap kirim header CORS di success
-    return res.status(200).json(data);
-  } catch (err) {
-    // Tetap kirim header CORS di error
-    return res.status(500).json({
-      error: "Internal Server Error",
-      detail: err.message,
+   const response = await fetch(apiUrl, { redirect: "follow" });
+  const data = await response.json();
+  
+  // Tampilkan response Google di Vercel Logs
+  console.log("Google API Response:", JSON.stringify(data, null, 2));
+  
+  // Jika Google mengembalikan error
+  if (!response.ok || data.error) {
+    return res.status(response.status || 500).json({
+      error: data.error || data
+    });
+  }
+  
+  // Jika berhasil
+  return res.status(200).json(data);
     });
   }
 }
