@@ -2,14 +2,12 @@ export default async function handler(req, res) {
   const allowedOrigins = ["https://fajarleo.github.io"];
   const origin = req.headers.origin;
 
-  // Pastikan origin ada dan cocok
-  if (origin && allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  } else {
-    // fallback: jangan pakai undefined
-    return res.status(403).json({ error: "Origin tidak diizinkan" });
-  }
+  // Pastikan header selalu dikirim, bahkan saat error
+  const corsOrigin = allowedOrigins.includes(origin)
+    ? origin
+    : "https://fajarleo.github.io";
 
+  res.setHeader("Access-Control-Allow-Origin", corsOrigin);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
