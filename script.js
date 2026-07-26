@@ -80,7 +80,7 @@ async function validateURL(url) {
 
 async function generateResult(url) {
     try {
-        const response = await fetch(`https://your-vercel-project.vercel.app/api/scan?url=${encodeURIComponent(url)}`);
+        const response = await fetch(`https://scanner-santorina.vercel.app/api/scan?url=https://example.com=${encodeURIComponent(url)}`);
         const data = await response.json();
 
         if (!data.lighthouseResult) {
