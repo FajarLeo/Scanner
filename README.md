@@ -1,2 +1,2 @@
 # Scanner
-Software quality scanner for website
+Software quality scanner for website by FajarLeo
