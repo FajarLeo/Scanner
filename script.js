@@ -80,7 +80,15 @@ async function validateURL(url) {
 
 async function generateResult(url) {
     try {
-        const response = await fetch(`https://scanner-santorina.vercel.app/api/scan?url=${encodeURIComponent(url)}`);
+        const response = await fetch(
+            `https://scanner-santorina.vercel.app/api/scan?url=${encodeURIComponent(url)}`,
+            {
+                method: "GET",
+                mode: "cors",        // ✅ pastikan fetch pakai CORS
+                credentials: "omit"  // ✅ jangan kirim cookie/session
+            }
+        );
+
         const data = await response.json();
 
         if (!data.lighthouseResult) {
