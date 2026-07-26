@@ -28,8 +28,10 @@ export default async function handler(req, res) {
       url
     )}&strategy=desktop&key=${apiKey}`;
 
-    const response = await fetch(apiUrl);
+    const response = await fetch(apiUrl, { redirect: "follow" });
     const data = await response.json();
+    return res.status(200).json(data);
+
 
     // Tetap kirim header CORS di success
     return res.status(200).json(data);
