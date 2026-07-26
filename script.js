@@ -92,27 +92,23 @@ async function generateResult(url) {
 
         const data = await response.json();
 
+        console.log("FULL RESPONSE:", data);
+        console.log("HAS LIGHTHOUSE:", !!data.lighthouseResult);
+        console.log("LIGHTHOUSE:", data.lighthouseResult);
+
         // Pastikan data Lighthouse ada
-        if (!data.lighthouseResult) {
-            throw new Error("Website tidak dapat dianalisis oleh Google PageSpeed.");
+        const categories = data.lighthouseResult?.categories;
+        
+        if (!categories) {
+            throw new Error("Kategori Lighthouse tidak ditemukan.");
         }
-
-        // Ambil skor
-        const performance = Math.round(
-            (data.lighthouseResult.categories.performance.score ?? 0) * 100
-        );
-
-        const accessibility = Math.round(
-            (data.lighthouseResult.categories.accessibility.score ?? 0) * 100
-        );
-
-        const security = Math.round(
-            (data.lighthouseResult.categories["best-practices"].score ?? 0) * 100
-        );
-
-        const overall = Math.round(
-            (performance + accessibility + security) / 3
-        );
+        
+        const performance = Math.round((categories.performance?.score ?? 0) * 100);
+        const accessibility = Math.round((categories.accessibility?.score ?? 0) * 100);
+        const security = Math.round((categories["best-practices"]?.score ?? 0) * 100);
+                const overall = Math.round(
+                    (performance + accessibility + security) / 3
+                );
 
         // Tampilkan hasil
         performanceText.textContent = performance;
